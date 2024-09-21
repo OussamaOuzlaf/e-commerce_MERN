@@ -1,9 +1,11 @@
-import { cartModel } from "../models/cartModel"
+import { ICart, ICartItems, cartModel } from "../models/cartModel"
 import { productsModel } from "../models/productsModel";
 
 interface CreateCartForUser {
     userId: string;
 }
+
+// Create One item in DataBase
 
 const createActiveCartForUser = async ({ userId }: CreateCartForUser) => {
     const cart = await cartModel.create({ userId, totalAmount: 0 })
@@ -14,6 +16,8 @@ const createActiveCartForUser = async ({ userId }: CreateCartForUser) => {
 interface GetCartForUser {
     userId: string;
 }
+
+// get item from database
 
 export const getActiveCartForUser = async ({ userId }: GetCartForUser) => {
     let cart = await cartModel.findOne({ userId, status: "Active" });
@@ -28,6 +32,22 @@ interface AddItemsToCart {
     userId: string;
     quantity: number;
 }
+
+interface ClearCart {
+    userId: string
+}
+
+// Clear all items from database
+
+export const clearCart = async ({ userId }: ClearCart) => {
+    const cart = await getActiveCartForUser({ userId });
+    cart.items = [];
+    cart.totalAmount = 0;
+    const updateCart = await cart.save();
+    return { data: updateCart, statusCode: 200 }
+}
+
+// Add item on database
 
 export const addItemsToCart = async ({ productId, userId, quantity }: AddItemsToCart) => {
     const cart = await getActiveCartForUser({ userId });
@@ -57,6 +77,8 @@ interface UpdateItemsToCart {
     quantity: number;
 }
 
+// Update item on database
+
 export const updateItemsToCart = async ({ productId, userId, quantity }: UpdateItemsToCart) => {
     const cart = await getActiveCartForUser({ userId });
     const existInCart = cart.items.find((e) => e.product.toString() === productId)
@@ -72,12 +94,40 @@ export const updateItemsToCart = async ({ productId, userId, quantity }: UpdateI
     // }
     existInCart.quantity = quantity;
     const otherCartItems = cart.items.filter((p) => p.product.toString() !== productId)
-    let total = otherCartItems.reduce((sum, product) => {
-        sum += product.quantity * product.unitPrice;
-        return sum;
-    }, 0)
+    let total = calculateCartTotalItems({ cartItems: otherCartItems });
     total += existInCart.quantity * existInCart.unitPrice;
     cart.totalAmount = total;
     const updateCart = await cart.save();
     return { data: updateCart, statusCode: 201 }
 }
+
+interface DeleteItemsToCart {
+    productId: any;
+    userId: string;
+}
+
+// delete one item on database
+
+export const deleteItemsToCart = async ({ userId, productId }: DeleteItemsToCart) => {
+    const cart = await getActiveCartForUser({ userId });
+    const existInCart = cart.items.find((e) => e.product.toString() === productId)
+    if (!existInCart) {
+        return { data: "Item does not already exists in cart!", statusCode: 400 }
+    }
+    const otherCartItems = cart.items.filter((p) => p.product.toString() !== productId)
+    let total = calculateCartTotalItems({ cartItems: otherCartItems });
+    cart.items = otherCartItems;
+    cart.totalAmount = total;
+    const updateCart = await cart.save();
+    return { data: updateCart, statusCode: 201 }
+}
+
+// Calculate 
+
+const calculateCartTotalItems = ({ cartItems }: { cartItems: ICartItems[] }) => {
+    const total = cartItems.reduce((sum, product) => {
+        sum += product.quantity * product.unitPrice;
+        return sum;
+    }, 0);
+    return total;
+};
