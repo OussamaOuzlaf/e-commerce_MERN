@@ -38,5 +38,5 @@ export const logIn = async ({ email, pass }: LoginParams) => {
 }
 
 const generateKay = (data: any) => {
-    return jwt.sign(data, "jFA+m)9pyn(V>y<*aWD.1EY9+{#J4e$w")
+    return jwt.sign(data, process.env.JWT_SECRET || '')
 }
