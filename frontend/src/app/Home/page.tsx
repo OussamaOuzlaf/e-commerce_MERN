@@ -25,7 +25,7 @@ export const HomePage = () => {
     }
     return (
         <div className='p-4 grid grid-cols-3 gap-4'>
-            {products.map((p) => {
+            {products.map((p, index) => {
                 return (
                     <ProductCart {...p} />
                 )

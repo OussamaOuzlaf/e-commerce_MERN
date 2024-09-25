@@ -17,7 +17,7 @@ export const register = async ({ firstName, lastName, email, pass }: RegisterPar
     const hashPassword = await bcrypt.hash(pass, 10)
     const newUser = new userModel({ firstName, lastName, email, pass: hashPassword })
     await newUser.save()
-    return { data: generateKay({ firstName, lastName, email }), statusCode: 200 };
+    return { data: generateKey({ firstName, lastName, email }), statusCode: 200 };
 }
 
 interface LoginParams {
@@ -32,11 +32,11 @@ export const logIn = async ({ email, pass }: LoginParams) => {
     }
     const passMatch = await bcrypt.compare(pass, findUser.pass);
     if (passMatch) {
-        return { data: generateKay({ firstName: findUser.firstName, lastName: findUser.lastName, email }), statusCode: 200 };
+        return { data: generateKey({ firstName: findUser.firstName, lastName: findUser.lastName, email }), statusCode: 200 };
     }
     return { data: "Your password or email is not correct", statusCode: 200 };
 }
 
-const generateKay = (data: any) => {
+const generateKey = (data: any) => {
     return jwt.sign(data, process.env.JWT_SECRET || '')
 }

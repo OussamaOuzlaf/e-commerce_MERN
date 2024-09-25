@@ -3,11 +3,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { IoLogoAndroid } from "react-icons/io";
 import { FaRegCircleUser } from "react-icons/fa6"
+import Link from 'next/link';
+import { useAuth } from '@/context/Auth/Context';
 
 const Links = ["PRODUCTS", "PRICING", "BLOG"]
 const linksProfile = ["Profile", "Account", "Dashboard", "Logout"]
 
 export const Navbar = () => {
+    const { username, token } = useAuth()
+    console.log("from navbar", { username, token });
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const modalRef = useRef<HTMLDivElement>(null); 
     const handleButtonClick = () => setIsModalOpen((prev) => !prev);
@@ -26,6 +30,8 @@ export const Navbar = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [isModalOpen]);
+    
+    
     return (
         <div className='flex items-center justify-between bg-gray-800 text-white p-6 relative'>
             <div className='flex items-center gap-16'>
@@ -42,7 +48,7 @@ export const Navbar = () => {
                 </div>
             </div>
             <div className="text-3xl cursor-pointer">
-                <span onClick={handleButtonClick}><FaRegCircleUser /></span>
+                <Link href="/Register"><span onClick={handleButtonClick}><FaRegCircleUser /></span></Link>
             </div>
             {isModalOpen  ? <div className='w-30 p-4 rounded grid grid-cols-1 gap-4 
             absolute right-8 top-16 bg-white shadow-lg' ref={modalRef}>
