@@ -7,13 +7,13 @@ import Link from 'next/link';
 import { useAuth } from '@/context/Auth/Context';
 
 const Links = ["PRODUCTS", "PRICING", "BLOG"]
-const linksProfile = ["Profile", "Account", "Dashboard", "Logout"]
+const linksProfile = ["Profile", "Logout"]
 
 export const Navbar = () => {
-    const { username, token } = useAuth()
-    console.log("from navbar", { username, token });
+    const { username, isAuthenticated } = useAuth();
+    const [userData, setUserData] = useState({ user: '' });
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const modalRef = useRef<HTMLDivElement>(null); 
+    const modalRef = useRef<HTMLDivElement>(null);
     const handleButtonClick = () => setIsModalOpen((prev) => !prev);
     const handleClickOutside = (event: MouseEvent) => {
         if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -30,8 +30,7 @@ export const Navbar = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [isModalOpen]);
-    
-    
+
     return (
         <div className='flex items-center justify-between bg-gray-800 text-white p-6 relative'>
             <div className='flex items-center gap-16'>
@@ -47,18 +46,25 @@ export const Navbar = () => {
                     })}
                 </div>
             </div>
-            <div className="text-3xl cursor-pointer">
-                <Link href="/Register"><span onClick={handleButtonClick}><FaRegCircleUser /></span></Link>
-            </div>
-            {isModalOpen  ? <div className='w-30 p-4 rounded grid grid-cols-1 gap-4 
+            <>
+                {isAuthenticated ? <div>
+                    <div className="text-3xl cursor-pointer flex items-center gap-4">
+                        <span className='text-base'>{username}</span>
+                        <span onClick={handleButtonClick}><FaRegCircleUser /></span>
+                    </div>
+                    {isModalOpen ? <div className='w-30 p-4 rounded grid grid-cols-1 gap-4 
             absolute right-8 top-16 bg-white shadow-lg' ref={modalRef}>
-                {linksProfile.map((e, index) => {
-                    return (
-                        <span key={index} onClick={handleButtonClick} 
-                        className='text-black cursor-pointer font-semibold'>{e}</span>
-                    )
-                })}
-            </div> : ''}
+                        {linksProfile.map((e, index) => {
+                            return (
+                                <span key={index} onClick={handleButtonClick}
+                                    className='text-black cursor-pointer font-semibold'>{e}</span>
+                            )
+                        })}
+                    </div>
+                        : ''}
+                </div> : <Link href="/Login">
+                    <button className='text-lg bg-black text-white rounded-full p-2'>Login</button></Link>}
+            </>
         </div>
     )
 }
