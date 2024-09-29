@@ -1,17 +1,14 @@
-"use client"
-
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { IoLogoAndroid } from "react-icons/io";
 import { FaRegCircleUser } from "react-icons/fa6"
-import Link from 'next/link';
-import { useAuth } from '@/context/Auth/Context';
-
+import { FaShoppingCart } from "react-icons/fa";
+import { useAuth } from '../context/Auth/Context';
+import { Link } from 'react-router-dom';
 const Links = ["PRODUCTS", "PRICING", "BLOG"]
-const linksProfile = ["Profile", "Logout"]
+
 
 export const Navbar = () => {
-    const { username, isAuthenticated } = useAuth();
-    const [userData, setUserData] = useState({ user: '' });
+    const { username, isAuthenticated, logOut } = useAuth();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const modalRef = useRef<HTMLDivElement>(null);
     const handleButtonClick = () => setIsModalOpen((prev) => !prev);
@@ -30,7 +27,6 @@ export const Navbar = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [isModalOpen]);
-
     return (
         <div className='flex items-center justify-between bg-gray-800 text-white p-6 relative'>
             <div className='flex items-center gap-16'>
@@ -46,23 +42,31 @@ export const Navbar = () => {
                     })}
                 </div>
             </div>
+            <Link to="/cart">
+                <div className='relative cursor-pointer'>
+                    <span className='text-2xl'><FaShoppingCart /></span>
+                    <span className='absolute -top-4 -right-4 w-2 h-2 rounded-full 
+                        p-3 bg-red-600 text-white flex items-center justify-center'>45</span>
+                </div>
+            </Link>
             <>
-                {isAuthenticated ? <div>
+                {isAuthenticated ? <div className='flex items-center gap-6'>
                     <div className="text-3xl cursor-pointer flex items-center gap-4">
                         <span className='text-base'>{username}</span>
                         <span onClick={handleButtonClick}><FaRegCircleUser /></span>
                     </div>
                     {isModalOpen ? <div className='w-30 p-4 rounded grid grid-cols-1 gap-4 
             absolute right-8 top-16 bg-white shadow-lg' ref={modalRef}>
-                        {linksProfile.map((e, index) => {
-                            return (
-                                <span key={index} onClick={handleButtonClick}
-                                    className='text-black cursor-pointer font-semibold'>{e}</span>
-                            )
-                        })}
+                        <span onClick={handleButtonClick}
+                            className='text-black cursor-pointer font-semibold'>Profile</span>
+                        <span onClick={() => {
+                            handleButtonClick();
+                            logOut()
+                        }}
+                            className='text-black cursor-pointer font-semibold'>Logout</span>
                     </div>
                         : ''}
-                </div> : <Link href="/Login">
+                </div> : <Link to="/Login">
                     <button className='text-lg bg-black text-white rounded-full p-2'>Login</button></Link>}
             </>
         </div>

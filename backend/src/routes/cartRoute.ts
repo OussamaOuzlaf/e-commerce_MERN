@@ -1,7 +1,10 @@
 import express from 'express';
-import { addItemsToCart, checkout, clearCart, deleteItemsToCart, getActiveCartForUser, updateItemsToCart } from '../services/cartService';
-import { validateJWT } from '../middleWares/validateJWT';
+import {
+    addItemsToCart, checkout, clearCart, deleteItemsToCart,
+    getActiveCartForUser, updateItemsToCart
+} from '../services/cartService';
 import { ExtendRequest } from '../Types/extendedRequest';
+import validateJWT from '../middleWares/validateJWT';
 
 const router = express.Router();
 
@@ -13,7 +16,6 @@ router.get('/', validateJWT, async (req: ExtendRequest, res) => {
     } catch {
         res.status(500).send("Something wont wrong!")
     }
-
 })
 
 router.post('/items', validateJWT, async (req: ExtendRequest, res) => {

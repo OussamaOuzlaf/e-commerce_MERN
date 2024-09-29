@@ -1,9 +1,7 @@
-"use client"
-import { ProductCart } from '@/components/ProductCart'
-import { BASE_URL } from '@/constant/baseURL'
-import { Product } from '@/types/Product'
-
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Product } from '../../../types/Product'
+import { BASE_URL } from '../../../constant/baseURL'
+import { ProductCart } from '../../ProductCart'
 
 export const HomePage = () => {
     const [products, setProducts] = useState<Product[]>([])

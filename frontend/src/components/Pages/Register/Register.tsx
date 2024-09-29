@@ -1,8 +1,7 @@
-"use client"
-import { Navbar } from '@/components/Navbar'
-import { BASE_URL } from '@/constant/baseURL';
-import { useAuth } from '@/context/Auth/Context';
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
+import { useAuth } from '../../../context/Auth/Context';
+import { BASE_URL } from '../../../constant/baseURL';
+import { useNavigate } from 'react-router-dom';
 
 const classInput = 'p-2 rounded border-gray-600 border-solid border-2'
 
@@ -41,7 +40,6 @@ export default function Register()  {
     }
     return (
         <>
-            <Navbar />
             <div className='container py-6'>
                 <h1 className='text-center text-2xl font-semibold mb-2'>Register new Account</h1>
                 <div className='flex flex-col gap-4 justify-center items-center'>
