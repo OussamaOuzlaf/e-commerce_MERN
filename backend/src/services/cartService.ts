@@ -16,12 +16,18 @@ const createActiveCartForUser = async ({ userId }: CreateCartForUser) => {
 
 interface GetCartForUser {
     userId: string;
+    populateProducts?: boolean;
 }
 
 // get item from database
 
-export const getActiveCartForUser = async ({ userId }: GetCartForUser) => {
-    let cart = await cartModel.findOne({ userId, status: "Active" });
+export const getActiveCartForUser = async ({ userId, populateProducts }: GetCartForUser) => {
+    let cart;
+    if (populateProducts) {
+        cart = await cartModel.findOne({ userId, status: "Active" }).populate("items.product");
+    } else {
+        cart = await cartModel.findOne({ userId, status: "Active" });
+    }
     if (!cart) {
         cart = await createActiveCartForUser({ userId })
     }
@@ -68,8 +74,8 @@ export const addItemsToCart = async ({ productId, userId, quantity }: AddItemsTo
 
     cart.items.push({ product: productId, unitPrice: product.price, quantity })
     cart.totalAmount += product.price * quantity;
-    const updateCart = await cart.save();
-    return { data: updateCart, statusCode: 201 }
+    await cart.save();
+    return { data: await getActiveCartForUser({ userId, populateProducts: true }), statusCode: 201 }
 }
 
 interface UpdateItemsToCart {
@@ -98,8 +104,8 @@ export const updateItemsToCart = async ({ productId, userId, quantity }: UpdateI
     let total = calculateCartTotalItems({ cartItems: otherCartItems });
     total += existInCart.quantity * existInCart.unitPrice;
     cart.totalAmount = total;
-    const updateCart = await cart.save();
-    return { data: updateCart, statusCode: 201 }
+    await cart.save();
+    return { data: await getActiveCartForUser({ userId, populateProducts: true }), statusCode: 201 }
 }
 
 interface DeleteItemsToCart {
@@ -119,8 +125,8 @@ export const deleteItemsToCart = async ({ userId, productId }: DeleteItemsToCart
     let total = calculateCartTotalItems({ cartItems: otherCartItems });
     cart.items = otherCartItems;
     cart.totalAmount = total;
-    const updateCart = await cart.save();
-    return { data: updateCart, statusCode: 201 }
+    await cart.save();
+    return { data: await getActiveCartForUser({ userId, populateProducts: true }), statusCode: 201 }
 }
 
 interface Checkout {

@@ -3,5 +3,5 @@ export interface CartItems {
     title: string;
     quantity: number;
     unitPrice: number;
-    productImage: string;
+    image: string;
 } 
