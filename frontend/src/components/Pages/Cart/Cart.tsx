@@ -4,7 +4,7 @@ import { useCart } from '../../../context/Cart/CartContext';
 
 export default function Cart() {
     const { token } = useAuth();
-    const { cartItems, totalAmount, updateItemInCart, removeItemInCart } = useCart();
+    const { cartItems, totalAmount, updateItemInCart, removeItemInCart, clearCart } = useCart();
     const handleQuantity = (productId: string, quantity: number) => {
         if (quantity <= 0) {
             return;
@@ -30,14 +30,18 @@ export default function Cart() {
                                         onClick={() => handleQuantity(productId, quantity + 1)}>+</button>
                                     <button className='text-lg rounded w-10 h-10 p-2 bg-blue-600'
                                         onClick={() => handleQuantity(productId, quantity - 1)}>-</button>
-                                    <button className='text-lg font-semibold bg-blue-600 rounded p-2' 
-                                    onClick={() => handleRemoveItem(productId)}>Remove Item</button>
+                                    <button className='text-lg font-semibold bg-blue-600 rounded p-2'
+                                        onClick={() => handleRemoveItem(productId)}>Remove Item</button>
                                 </div>
                             </div>
                         )
                     })}
                 </div>
-                <span className='text-lg font-semibold'>Total Cart: {totalAmount.toFixed(2)}DH</span>
+                <div className='flex items-center gap-4'>
+                    <span className='text-lg font-semibold'>Total Cart: {totalAmount.toFixed(2)}DH</span>
+                    <button className='text-lg font-semibold bg-blue-600 rounded p-2' 
+                    onClick={clearCart}>Clear All Item</button>
+                </div>
             </div>
         </>
     )

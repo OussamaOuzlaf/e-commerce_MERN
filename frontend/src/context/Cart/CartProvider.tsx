@@ -115,8 +115,30 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
             console.log(error);
         }
     }
+    const clearCart = async () => {
+        try {
+            const response = await fetch(`${BASE_URL}/cart`, {
+                method: "DELETE",
+                headers: {
+                    'Authorization': `Bearer ${JSON.parse(token || "")}`,
+                }
+            });
+            if (!response.ok) {
+                setError("Failed to Clear All to cart!!")
+            }
+            const cart = await response.json();
+            if (!cart) {
+                setError("Failed to parse cart data")
+            }
+            setCartItems([])
+            setTotalAmount(0)
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
-        <CartContext.Provider value={{ cartItems, totalAmount, addItemsToCart, updateItemInCart, removeItemInCart }}>
+        <CartContext.Provider value={{ cartItems, totalAmount, addItemsToCart, 
+        updateItemInCart, removeItemInCart, clearCart }}>
             {children}
         </CartContext.Provider>
     )
