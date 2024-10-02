@@ -4,11 +4,13 @@ import { FaRegCircleUser } from "react-icons/fa6"
 import { FaShoppingCart } from "react-icons/fa";
 import { useAuth } from '../context/Auth/Context';
 import { Link } from 'react-router-dom';
+import { useCart } from '../context/Cart/CartContext';
 const Links = ["PRODUCTS", "PRICING", "BLOG"]
 
 
 export const Navbar = () => {
     const { username, isAuthenticated, logOut } = useAuth();
+    const { cartItems } = useCart()
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const modalRef = useRef<HTMLDivElement>(null);
     const handleButtonClick = () => setIsModalOpen((prev) => !prev);
@@ -46,7 +48,8 @@ export const Navbar = () => {
                 <div className='relative cursor-pointer'>
                     <span className='text-2xl'><FaShoppingCart /></span>
                     <span className='absolute -top-4 -right-4 w-2 h-2 rounded-full 
-                        p-3 bg-red-600 text-white flex items-center justify-center'>45</span>
+                        p-3 bg-red-600 text-white flex items-center justify-center'>{cartItems.length
+                        }</span>
                 </div>
             </Link>
             <>
