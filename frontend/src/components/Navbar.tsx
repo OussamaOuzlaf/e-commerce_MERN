@@ -3,16 +3,17 @@ import { IoLogoAndroid } from "react-icons/io";
 import { FaRegCircleUser } from "react-icons/fa6"
 import { FaShoppingCart } from "react-icons/fa";
 import { useAuth } from '../context/Auth/Context';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/Cart/CartContext';
-const Links = ["PRODUCTS", "PRICING", "BLOG"]
 
+const Links = ["PRODUCTS", "PRICING", "BLOG"]
 
 export const Navbar = () => {
     const { username, isAuthenticated, logOut } = useAuth();
     const { cartItems } = useCart()
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const modalRef = useRef<HTMLDivElement>(null);
+    const navigate = useNavigate();
     const handleButtonClick = () => setIsModalOpen((prev) => !prev);
     const handleClickOutside = (event: MouseEvent) => {
         if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -32,7 +33,7 @@ export const Navbar = () => {
     return (
         <div className='flex items-center justify-between bg-gray-800 text-white p-6 relative'>
             <div className='flex items-center gap-16'>
-                <p className='flex items-center gap-2 text-xl font-semibold'>
+                <p className='flex items-center gap-2 text-xl font-semibold' onClick={() => navigate('/')}>
                     <IoLogoAndroid />
                     Logo
                 </p>
@@ -60,8 +61,11 @@ export const Navbar = () => {
                     </div>
                     {isModalOpen ? <div className='w-30 p-4 rounded grid grid-cols-1 gap-4 
             absolute right-8 top-16 bg-white shadow-lg' ref={modalRef}>
-                        <span onClick={handleButtonClick}
-                            className='text-black cursor-pointer font-semibold'>Profile</span>
+                        <span onClick={() => {
+                            handleButtonClick();
+                            navigate('/my-order')
+                        }}
+                            className='text-black cursor-pointer font-semibold'>orders</span>
                         <span onClick={() => {
                             handleButtonClick();
                             logOut()
