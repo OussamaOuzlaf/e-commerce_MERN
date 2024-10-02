@@ -92,14 +92,25 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
     }
     const removeItemInCart = async (productId: string) => {
         try {
-            const response = await fetch(`${BASE_URL}/cart/items`, {
+            const response = await fetch(`${BASE_URL}/cart/items/${productId}`, {
                 method: "DELETE",
-                body: JSON.stringify({ productId }),
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${JSON.parse(token || "")}`,
                 }
             });
+            if (!response.ok) {
+                setError("Failed to remove to cart!!")
+            }
+            const cart = await response.json();
+            if (!cart) {
+                setError("Failed to parse cart data")
+            }
+            const cartItemsMapped = cart.items.map(({ product, quantity, unitPrice }: 
+                { product: any; quantity: number; unitPrice: number }) => ({
+                productId: product._id, title: product.title, image: product.image, quantity, unitPrice: unitPrice || product.price
+            }))
+            setCartItems([...cartItemsMapped])
+            setTotalAmount(cart.totalAmount)
         } catch (error) {
             console.log(error);
         }
