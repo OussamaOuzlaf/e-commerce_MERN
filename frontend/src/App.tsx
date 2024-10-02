@@ -7,28 +7,30 @@ import { Navbar } from "./components/Navbar";
 import Cart from "./components/Pages/Cart/Cart";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { CartProvider } from "./context/Cart/CartProvider";
+import CheckoutPage from "./components/Pages/Checkout/CheckoutPage";
 
 
 function App() {
-  return (
-    <AuthProvider>
-      <CartProvider>
-        <div className="r">
-          <BrowserRouter>
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route element={<ProtectedRoute />}>
-                <Route path="/cart" element={<Cart />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </div>
-      </CartProvider>
-    </AuthProvider>
-  )
+    return (
+        <AuthProvider>
+            <CartProvider>
+                <div className="r">
+                    <BrowserRouter>
+                        <Navbar />
+                        <Routes>
+                            <Route path="/" element={<HomePage />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
+                            <Route element={<ProtectedRoute />}>
+                                <Route path="/cart" element={<Cart />} />
+                                <Route path="/Checkout" element={<CheckoutPage />} />
+                            </Route>
+                        </Routes>
+                    </BrowserRouter>
+                </div>
+            </CartProvider>
+        </AuthProvider>
+    )
 }
 
 export default App

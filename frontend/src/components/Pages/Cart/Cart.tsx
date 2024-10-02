@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../../../context/Auth/Context';
 import { useCart } from '../../../context/Cart/CartContext';
+import { Link } from 'react-router-dom';
 
 export default function Cart() {
     const { token } = useAuth();
@@ -41,6 +42,7 @@ export default function Cart() {
                     <span className='text-lg font-semibold'>Total Cart: {totalAmount.toFixed(2)}DH</span>
                     <button className='text-lg font-semibold bg-blue-600 rounded p-2' 
                     onClick={clearCart}>Clear All Item</button>
+                    <Link to="/Checkout"><button className='text-xl font-semibold text-white bg-blue-500 rounded p-2'>Checkout</button></Link>
                 </div>
             </div>
         </>
